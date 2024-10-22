@@ -28,6 +28,35 @@ async function voiceToText(msg) {
   }
 }
 
+// This function handles the missing media in the chat by retrieving messages from the chat until the media is available
+async function downloadQuotedMedia(quotedMsg, messageId, chat, maxRetries = 5) {
+  let attachmentData = null;
+  let counter = 10;
+
+  while (!attachmentData && counter <= maxRetries) {
+    try {
+      const quotedMsgArr = await chat.fetchMessages({ limit: counter });
+      for (let i = 0; i < quotedMsgArr.length; i++) {
+        if (quotedMsgArr[i].id._serialized === messageId) {
+          attachmentData = await quotedMsg.downloadMedia();
+          break;
+        }
+      }
+    } catch (err) {
+      console.log(`Error fetching messages. Retrying in 5 seconds... (attempt ${counter}/${maxRetries})`);
+      await new Promise(resolve => setTimeout(resolve, 5000));
+    }
+
+    counter++;
+  }
+
+  if (!attachmentData) {
+    console.log(`Could not download quoted media after ${maxRetries} attempts.`);
+  }
+
+  return attachmentData;
+}
+
 async function SpeechToTextTranscript(base64data, message) {
   // Decode the base64 data (The data is a base64 string because thats the way WhatsApp.js handles media)
   const decodedBuffer = Buffer.from(base64data, 'base64');
