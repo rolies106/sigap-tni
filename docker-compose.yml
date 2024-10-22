@@ -1,0 +1,10 @@
+x-shared-variables: &shared-variables
+  MODEL_VERSION: "tiny"
+
+services:
+  whisper_api:
+    build:
+      context: ./stt
+      args: *shared-variables
+    container_name: "whisper_api"
+    environment: *shared-variables
