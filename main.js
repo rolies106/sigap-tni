@@ -36,7 +36,11 @@ client.on('ready', () => {
 });
 
 client.on('message', async msg => {
+
+  // if (msg.id.fromMe) {
   console.log('MESSAGE RECEIVED');
+  console.log(msg);
+  console.log('----------------');
 
   // check if the message is "ping"
   if (msg.body == '/ping') {
@@ -46,9 +50,11 @@ client.on('message', async msg => {
     report.processReport(msg);
   } else if (msg.body.startsWith('/ai ')) {
     ai.chatgpt(msg);
-  } else if (msg.hasMedia()) {
+  } else if (msg.hasMedia) {
     stt.voiceToText(msg);
   }
+  // }
+
 });
 
 client.initialize();

@@ -8,3 +8,5 @@ services:
       args: *shared-variables
     container_name: "whisper_api"
     environment: *shared-variables
+    ports:
+      - 5000:5000

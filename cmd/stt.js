@@ -1,11 +1,12 @@
+const axios = require("axios");
 async function voiceToText(msg) {
   // Here we check if the message has media
-  const messageId = quotedMsg.id._serialized
+  const messageId = msg.id._serialized
 
   if (msg.hasMedia) {
     // If is a voice message, we download it and send it to the api
     if (msg.type.includes("ptt") || msg.type.includes("audio")) {
-      const attachmentData = await downloadQuotedMedia(msg, messageId, chat, maxRetries = 1000);
+      const attachmentData = await downloadMedia(msg, maxRetries = 1000);
       if (attachmentData) {
         SpeechToTextTranscript(attachmentData.data, msg)
           .then((body) => {
@@ -29,19 +30,13 @@ async function voiceToText(msg) {
 }
 
 // This function handles the missing media in the chat by retrieving messages from the chat until the media is available
-async function downloadQuotedMedia(quotedMsg, messageId, chat, maxRetries = 5) {
+async function downloadMedia(msg, maxRetries = 5) {
   let attachmentData = null;
   let counter = 10;
 
   while (!attachmentData && counter <= maxRetries) {
     try {
-      const quotedMsgArr = await chat.fetchMessages({ limit: counter });
-      for (let i = 0; i < quotedMsgArr.length; i++) {
-        if (quotedMsgArr[i].id._serialized === messageId) {
-          attachmentData = await quotedMsg.downloadMedia();
-          break;
-        }
-      }
+      attachmentData = await msg.downloadMedia();
     } catch (err) {
       console.log(`Error fetching messages. Retrying in 5 seconds... (attempt ${counter}/${maxRetries})`);
       await new Promise(resolve => setTimeout(resolve, 5000));
@@ -63,9 +58,7 @@ async function SpeechToTextTranscript(base64data, message) {
 
   // Send the decoded binary buffer to the Flask API
   return new Promise((resolve, reject) => {
-    request.post({
-      // This url is the url of the Flask API that handles the transcription using Whisper
-      url: global.config.stt.api,
+    axios.post(global.config.stt.api, {
       formData: {
         file: {
           value: decodedBuffer,
@@ -83,4 +76,8 @@ async function SpeechToTextTranscript(base64data, message) {
       resolve(body);
     });
   });
+}
+
+module.exports = {
+  voiceToText
 }
