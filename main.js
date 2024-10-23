@@ -39,7 +39,7 @@ client.on('message', async msg => {
 
   // if (msg.id.fromMe) {
   console.log('MESSAGE RECEIVED');
-  console.log(msg);
+  console.log(msg.type);
   console.log('----------------');
 
   // check if the message is "ping"

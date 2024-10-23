@@ -43,7 +43,7 @@ const APIs = {
     baseURL: "https://widipe.com"
   },
   whisper: {
-    baseURL: "http://localhost:5000"
+    baseURL: "http://localhost:9000"
   }
 };
 

@@ -13,7 +13,7 @@ global.config = {
 
   stt: {
     model: "tiny",
-    api: "https://localhost:5000"
+    api: "http://localhost:9000"
   },
 
   // MSG (Pesan)

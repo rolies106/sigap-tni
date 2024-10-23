@@ -6,17 +6,11 @@ async function voiceToText(msg) {
   if (msg.hasMedia) {
     // If is a voice message, we download it and send it to the api
     if (msg.type.includes("ptt") || msg.type.includes("audio")) {
-      const attachmentData = await downloadMedia(msg, maxRetries = 1000);
+      const attachmentData = await downloadMessageMedia(msg, maxRetries = 1000);
       if (attachmentData) {
         SpeechToTextTranscript(attachmentData.data, msg)
           .then((body) => {
-            console.log(body); // Handle the returned data here
-            const data = JSON.parse(body);
-            for (const result of data.results) {
-              const transcript = result.transcript;
-
-              msg.reply(responseMsgHeader + "\n\n" + transcript);
-            }
+            msg.reply("Hasil transcribe:\n\n" + body.data.text);
           })
           .catch((err) => {
             console.error(err); // Handle the error here
@@ -30,7 +24,7 @@ async function voiceToText(msg) {
 }
 
 // This function handles the missing media in the chat by retrieving messages from the chat until the media is available
-async function downloadMedia(msg, maxRetries = 5) {
+async function downloadMessageMedia(msg, maxRetries = 5) {
   let attachmentData = null;
   let counter = 10;
 
@@ -56,24 +50,24 @@ async function SpeechToTextTranscript(base64data, message) {
   // Decode the base64 data (The data is a base64 string because thats the way WhatsApp.js handles media)
   const decodedBuffer = Buffer.from(base64data, 'base64');
 
+  // Create the form data
+  const form = new FormData();
+  const fileBuffer = new File([decodedBuffer], message.t + "-stt.ptt;type=audio/x-wav");
+  form.append(
+    "audio_file",
+    fileBuffer
+  );
+
   // Send the decoded binary buffer to the Flask API
   return new Promise((resolve, reject) => {
-    axios.post(global.config.stt.api, {
-      formData: {
-        file: {
-          value: decodedBuffer,
-          options: {
-            filename: message.from + message.timestamp
-          }
-        }
+    axios.postForm(global.config.stt.api + '/asr?output=json', form, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        "Accept": "application/json"
       }
-    }, function (err, httpResponse, body) {
-      if (err) {
-        console.error(err);
-      } else {
-        console.log('Upload successful! Server responded with:', body);
-      }
+    }).then((body) => {
       resolve(body);
+      return body
     });
   });
 }
