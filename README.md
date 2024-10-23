@@ -4,7 +4,7 @@ Whatsapp Bot for reporting
 
 ## Requirement
 
-This bot need (Whisper ASR)[https://github.com/ahmetoner/whisper-asr-webservice] to process the audio, please run the container using this command first:
+This bot need [Whisper ASR](https://github.com/ahmetoner/whisper-asr-webservice) to process the audio, please run the container using this command first:
 
 ### CPU
 
