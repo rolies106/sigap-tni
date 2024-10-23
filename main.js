@@ -36,16 +36,20 @@ client.on('ready', () => {
 });
 
 client.on('message', async msg => {
+  // Set as typing
+  const chat = await msg.getChat();
+  chat.sendSeen();
+  chat.sendStateTyping();
 
-  // if (msg.id.fromMe) {
   console.log('MESSAGE RECEIVED');
+  console.log(msg.type + ': ' + msg.from);
   console.log(msg.type);
   console.log('----------------');
+
 
   // check if the message is "ping"
   if (msg.body == '/ping') {
     msg.reply('pong');
-
   } else if (msg.body.startsWith('/lapor ')) {
     report.processReport(msg);
   } else if (msg.body.startsWith('/ai ')) {
@@ -53,8 +57,6 @@ client.on('message', async msg => {
   } else if (msg.hasMedia) {
     stt.voiceToText(msg);
   }
-  // }
-
 });
 
 client.initialize();
