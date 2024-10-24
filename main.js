@@ -54,7 +54,7 @@ client.on('message', async msg => {
     report.processReport(msg);
   } else if (msg.body.startsWith('/ai ')) {
     ai.chatgpt(msg);
-  } else if (msg.hasMedia) {
+  } else if (msg.hasMedia && (msg.type.includes("ptt") || msg.type.includes("audio"))) {
     stt.voiceToText(msg);
   }
 });
