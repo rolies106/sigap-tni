@@ -2,10 +2,10 @@ const axios = require("axios");
 async function chatgpt(msg) {
     console.log("Processing request ai...");
     const input = msg.body.slice(4)
-
-    if (!input) return ctx.reply(
+    console.log(input);
+    if (!input) return msg.reply(
         `${quote(global.tools.msg.generateInstruction(["send"], ["text"]))}\n` +
-        quote(global.tools.msg.generateCommandExample(ctx._used.prefix + ctx._used.command, "apa itu whatsapp"))
+        quote(global.tools.msg.generateCommandExample(msg._used.prefix + msg._used.command, "apa itu whatsapp"))
     );
 
     try {
@@ -17,11 +17,11 @@ async function chatgpt(msg) {
             data
         } = await axios.get(apiUrl);
 
-        return ctx.reply(data.response);
+        return msg.reply(data.result);
     } catch (error) {
-        console.error(`[${global.config.pkg.name}] Error:`, error);
-        if (error.status !== 200) return ctx.reply(global.config.msg.notFound);
-        return ctx.reply(quote(`❎ Terjadi kesalahan: ${error.message}`));
+        console.error(`[${global.config.bot.name}] Error:`, error);
+        if (error.status !== 200) return msg.reply(global.config.msg.notFound);
+        return msg.reply(quote(`❎ Terjadi kesalahan: ${error.message}`));
     }
 }
 

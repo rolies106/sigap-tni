@@ -10,14 +10,17 @@ async function processReport(msg) {
 
     try {
         const apiUrl = global.tools.api.createUrl("ryzendesu", "/api/ai/chatgpt", {
-            text: "Jadikan laporan bullet poin: " + input,
+            text: "Anda adalah chatbot yang menangani laporan masyarakat, anda dapat merespon dengan tindakan yang diperlukan dalam suatu kejadian, anda juga sudah terhubung ke sistem lain yang dapat menangani kejadian yang dilaporkan (seperti yang membutuhkan pemadam kebakaran, kepolisian, atau rumah sakit), tolong tanggapi laporan ini: " + input,
             prompt: `Bot ${global.config.bot.name} ini dapat menerima laporan anda.` // Dapat diubah sesuai keinginan Anda
         });
         const {
             data
         } = await axios.get(apiUrl);
 
-        msg.reply(data.response);
+        console.log(apiUrl);
+        console.log(data);
+
+        msg.reply(data.result);
     } catch (error) {
         if (error.status !== 200) return msg.reply(global.config.msg.error);
         console.log(`Terjadi kesalahan: ${error.message}`);

@@ -9,7 +9,22 @@ async function voiceToText(msg) {
       const attachmentData = await downloadMessageMedia(msg, maxRetries = 1000);
       if (attachmentData) {
         SpeechToTextTranscript(attachmentData.data, msg)
-          .then((body) => {
+          .then(async (body) => {
+            try {
+              const apiUrl = global.tools.api.createUrl("ryzendesu", "/api/ai/chatgpt", {
+                text: "Anda adalah chatbot yang menangani laporan masyarakat, anda dapat merespon dengan tindakan yang diperlukan dalam suatu kejadian, anda juga sudah terhubung ke sistem lain yang dapat menangani kejadian yang dilaporkan (seperti yang membutuhkan pemadam kebakaran, kepolisian, atau rumah sakit), tolong tanggapi laporan ini: " + body.data.text,
+                prompt: `Bot ${global.config.bot.name} ini dapat menerima laporan anda.` // Dapat diubah sesuai keinginan Anda
+              });
+              const {
+                data
+              } = await axios.get(apiUrl);
+
+              msg.reply(data.result);
+            } catch (error) {
+              if (error.status !== 200) return msg.reply(global.config.msg.error);
+              console.log(`Terjadi kesalahan: ${error.message}`);
+            }
+
             msg.reply("Hasil transcribe:\n\n" + body.data.text);
           })
           .catch((err) => {
