@@ -9,15 +9,22 @@ async function chatgpt(msg) {
     );
 
     try {
-        const apiUrl = global.tools.api.createUrl("ryzendesu", "/api/ai/chatgpt", {
+        const apiUrl = global.tools.api.createUrl("sandipbaruwal", "/gemini", {
             text: input,
-            prompt: `Anda adalah bot WhatsApp bernama ${global.config.bot.name} yang dimiliki oleh ${global.config.owner.name}. Jika nama Anda mirip dengan tokoh di media, sesuaikan kepribadian Anda dengan nama tersebut. Jika tidak, tetaplah ramah, informatif, dan responsif.` // Dapat diubah sesuai keinginan Anda
+            prompt: input, // Dapat diubah sesuai keinginan Anda
         });
+        // const apiUrl = global.tools.api.createUrl("ryzendesu", "/api/ai/chatgpt", {
+        //     text: input,
+        //     prompt: `Anda adalah bot WhatsApp bernama ${global.config.bot.name} yang dimiliki oleh ${global.config.owner.name}. Jika nama Anda mirip dengan tokoh di media, sesuaikan kepribadian Anda dengan nama tersebut. Jika tidak, tetaplah ramah, informatif, dan responsif.` // Dapat diubah sesuai keinginan Anda
+        // });
         const {
             data
         } = await axios.get(apiUrl);
 
-        return msg.reply(data.result);
+        console.log(apiUrl);
+        console.log(data);
+
+        return msg.reply(data.answer);
     } catch (error) {
         console.error(`[${global.config.bot.name}] Error:`, error);
         if (error.status !== 200) return msg.reply(global.config.msg.notFound);

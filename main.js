@@ -55,6 +55,7 @@ client.on('message', async msg => {
   } else if (msg.body.startsWith('/ai ')) {
     ai.chatgpt(msg);
   } else if (msg.hasMedia) {
+    return msg.reply(quote(`❎ Pesan suara tidak tersedia dalam demo ini.`));
     stt.voiceToText(msg);
   }
 });
