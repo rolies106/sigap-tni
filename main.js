@@ -5,9 +5,14 @@ const ai = require("./cmd/ai.js");
 const report = require("./cmd/report.js");
 const stt = require("./cmd/stt.js");
 
-const { Client } = require('whatsapp-web.js');
+const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
-const client = new Client();
+const client = new Client({
+  authStrategy: new LocalAuth(),
+  puppeteer: {
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  }
+});
 
 let pairingCodeRequested = false;
 
@@ -55,7 +60,6 @@ client.on('message', async msg => {
   } else if (msg.body.startsWith('/ai ')) {
     ai.chatgpt(msg);
   } else if (msg.hasMedia) {
-    return msg.reply(quote(`❎ Pesan suara tidak tersedia dalam demo ini.`));
     stt.voiceToText(msg);
   }
 });

@@ -44,6 +44,9 @@ const APIs = {
   },
   whisper: {
     baseURL: "http://localhost:9000"
+  },
+  diktein: {
+    baseURL: "https://api.dikte.in"
   }
 };
 

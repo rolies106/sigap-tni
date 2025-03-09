@@ -1,39 +1,44 @@
 const axios = require("axios");
 async function voiceToText(msg) {
   // Here we check if the message has media
-  const messageId = msg.id._serialized
+  const messageId = msg.id.id
 
   if (msg.hasMedia) {
     // If is a voice message, we download it and send it to the api
-    if (msg.type.includes("ptt") || msg.type.includes("audio")) {
+    if (msg.type.includes("ptt") || msg.type.includes("audio", "ptt")) {
       const attachmentData = await downloadMessageMedia(msg, maxRetries = 1000);
       if (attachmentData) {
         SpeechToTextTranscript(attachmentData.data, msg)
           .then(async (body) => {
+            const textInput = body[0].text
+            console.log(body);
+            console.log(textInput);
             try {
-              const apiUrl = global.tools.api.createUrl("sandipbaruwal", "/gemini", {
-                text: body.data.text,
+              // const apiUrl = global.tools.api.createUrl("sandipbaruwal", "/gemini", {
+              //   text: body.data.text,
+              //   prompt: `Anda adalah chatbot yang menangani laporan masyarakat, anda dapat merespon dengan tindakan yang diperlukan dalam suatu kejadian, anda juga sudah terhubung ke sistem lain yang dapat menangani kejadian yang dilaporkan (seperti yang membutuhkan pemadam kebakaran, kepolisian, atau rumah sakit)` // Dapat diubah sesuai keinginan Anda
+              // });
+
+              const apiUrl = global.tools.api.createUrl("ryzendesu", "/api/ai/chatgpt", {
+                text: textInput,
                 prompt: `Anda adalah chatbot yang menangani laporan masyarakat, anda dapat merespon dengan tindakan yang diperlukan dalam suatu kejadian, anda juga sudah terhubung ke sistem lain yang dapat menangani kejadian yang dilaporkan (seperti yang membutuhkan pemadam kebakaran, kepolisian, atau rumah sakit)` // Dapat diubah sesuai keinginan Anda
               });
-
-              // const apiUrl = global.tools.api.createUrl("ryzendesu", "/api/ai/chatgpt", {
-              //   text: "Anda adalah chatbot yang menangani laporan masyarakat, anda dapat merespon dengan tindakan yang diperlukan dalam suatu kejadian, anda juga sudah terhubung ke sistem lain yang dapat menangani kejadian yang dilaporkan (seperti yang membutuhkan pemadam kebakaran, kepolisian, atau rumah sakit), tolong tanggapi laporan ini: " + body.data.text,
-              //   prompt: `Bot ${global.config.bot.name} ini dapat menerima laporan anda.` // Dapat diubah sesuai keinginan Anda
-              // });
               const {
                 data
               } = await axios.get(apiUrl);
 
-              msg.reply(data.answer);
+              console.log(data);
+
+              msg.reply(data.result);
+              msg.reply("Hasil transcribe:\n\n" + textInput);
             } catch (error) {
               if (error.status !== 200) return msg.reply(global.config.msg.error);
               console.log(`Terjadi kesalahan: ${error.message}`);
             }
-
-            msg.reply("Hasil transcribe:\n\n" + body.data.text);
           })
           .catch((err) => {
             console.error(err); // Handle the error here
+            console.log(err.response.data)
             return msg.reply(global.config.msg.error);
           });
       } else {
@@ -72,24 +77,83 @@ async function SpeechToTextTranscript(base64data, message) {
 
   // Create the form data
   const form = new FormData();
-  const fileBuffer = new File([decodedBuffer], message.t + "-stt.ptt;type=audio/x-wav");
+  const fileBuffer = new File([decodedBuffer], message.id.id + "-stt.ptt;type=audio/x-wav");
+
   form.append(
-    "audio_file",
+    "file", // audio_file
     fileBuffer
   );
 
-  // Send the decoded binary buffer to the Flask API
-  return new Promise((resolve, reject) => {
-    axios.postForm(global.config.stt.api + '/asr?output=json', form, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        "Accept": "application/json"
-      }
-    }).then((body) => {
-      resolve(body);
-      return body
-    });
+  form.append(
+    "source_language", 'id'
+  );
+  form.append(
+    "target_language", 'id'
+  );
+  form.append(
+    "resume", true
+  );
+
+  // Send the audio to Dikte.in
+  const apiUrl = global.tools.api.createUrl("diktein", "/v2/prod/stt/async/upload", {});
+  const {
+    data
+  } = await axios.postForm(apiUrl, form, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      "Authorization": "Bearer " + global.config.diktein.token
+    }
+  }).then((body) => {
+    return body
   });
+
+  if (data.bk.data.uuid != null) {
+    while (true) {
+      const result = await getDikteinResult(data.bk.data.uuid);
+
+      if (result.bk.message_status === "success") {
+        return result.bk.data.transcripts;
+        break;
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      // await setTimeout(5000);
+    }
+  }
+
+  return null;
+
+  // Send the decoded binary buffer to the Flask API
+  // return new Promise((resolve, reject) => {
+  //   axios.postForm(global.config.stt.api + '/asr?output=json', form, {
+  //     headers: {
+  //       "Content-Type": "multipart/form-data",
+  //       "Accept": "application/json"
+  //     }
+  //   }).then((body) => {
+  //     resolve(body);
+  //     return body
+  //   });
+  // });
+}
+
+async function getDikteinResult(uuid) {
+  // Send the audio to Dikte.in
+  const apiUrl = global.tools.api.createUrl("diktein", "/v2/prod/stt/async/content/" + uuid, {
+
+  });
+  const {
+    data
+  } = await axios.get(apiUrl, {
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + global.config.diktein.token
+    }
+  }).then((body) => {
+    return body
+  });
+
+  return data;
 }
 
 module.exports = {
