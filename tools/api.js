@@ -21,32 +21,17 @@ const APIs = {
   lenwy: {
     baseURL: "https://api-lenwy.vercel.app"
   },
-  lolhuman: {
-    baseURL: "https://api.lolhuman.xyz"
-  },
-  matbasing: {
-    baseURL: "https://matbasing.glitch.me"
-  },
-  miwudev: {
-    baseURL: "https://openapi.miwudev.my.id"
-  },
-  nyxs: {
-    baseURL: "https://api.nyxs.pw"
-  },
   ryzendesu: {
     baseURL: "https://api.ryzendesu.vip"
-  },
-  sandipbaruwal: {
-    baseURL: "https://sandipbaruwal.onrender.com"
-  },
-  widipe: {
-    baseURL: "https://widipe.com"
   },
   whisper: {
     baseURL: "http://localhost:9000"
   },
   diktein: {
     baseURL: "https://api.dikte.in"
+  },
+  openrouter: {
+    baseURL: "https://openrouter.ai"
   }
 };
 

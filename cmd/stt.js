@@ -1,7 +1,12 @@
 const axios = require("axios");
+const openai = require("openai");
+
 async function voiceToText(msg) {
   // Here we check if the message has media
   const messageId = msg.id.id
+  const chatgpt = new openai({
+    apiKey: global.config.openai.token,
+  });
 
   if (msg.hasMedia) {
     // If is a voice message, we download it and send it to the api
@@ -14,22 +19,35 @@ async function voiceToText(msg) {
             console.log(body);
             console.log(textInput);
             try {
-              // const apiUrl = global.tools.api.createUrl("sandipbaruwal", "/gemini", {
-              //   text: body.data.text,
-              //   prompt: `Anda adalah chatbot yang menangani laporan masyarakat, anda dapat merespon dengan tindakan yang diperlukan dalam suatu kejadian, anda juga sudah terhubung ke sistem lain yang dapat menangani kejadian yang dilaporkan (seperti yang membutuhkan pemadam kebakaran, kepolisian, atau rumah sakit)` // Dapat diubah sesuai keinginan Anda
-              // });
-
-              const apiUrl = global.tools.api.createUrl("ryzendesu", "/api/ai/chatgpt", {
-                text: textInput,
-                prompt: `Anda adalah chatbot yang menangani laporan masyarakat, anda dapat merespon dengan tindakan yang diperlukan dalam suatu kejadian, anda juga sudah terhubung ke sistem lain yang dapat menangani kejadian yang dilaporkan (seperti yang membutuhkan pemadam kebakaran, kepolisian, atau rumah sakit)` // Dapat diubah sesuai keinginan Anda
+              const data = await chatgpt.chat.completions.create({
+                messages: [
+                  {
+                    "role": "developer",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": `Anda adalah chatbot yang menangani laporan masyarakat, 
+              anda dapat merespon dengan tindakan yang diperlukan dalam suatu kejadian, 
+              asumsikan anda juga sudah terhubung ke sistem lain yang dapat menangani kejadian 
+              yang dilaporkan (seperti yang membutuhkan pemadam kebakaran, kepolisian, atau rumah sakit)`
+                      }
+                    ]
+                  },
+                  {
+                    "role": "user",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": textInput
+                      }
+                    ]
+                  }
+                ],
+                model: "gpt-4o-mini",
+                store: true,
               });
-              const {
-                data
-              } = await axios.get(apiUrl);
 
-              console.log(data);
-
-              msg.reply(data.result);
+              msg.reply(data.choices[0].message.content);
               msg.reply("Hasil transcribe:\n\n" + textInput);
             } catch (error) {
               if (error.status !== 200) return msg.reply(global.config.msg.error);
@@ -122,19 +140,6 @@ async function SpeechToTextTranscript(base64data, message) {
   }
 
   return null;
-
-  // Send the decoded binary buffer to the Flask API
-  // return new Promise((resolve, reject) => {
-  //   axios.postForm(global.config.stt.api + '/asr?output=json', form, {
-  //     headers: {
-  //       "Content-Type": "multipart/form-data",
-  //       "Accept": "application/json"
-  //     }
-  //   }).then((body) => {
-  //     resolve(body);
-  //     return body
-  //   });
-  // });
 }
 
 async function getDikteinResult(uuid) {

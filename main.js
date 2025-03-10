@@ -2,8 +2,11 @@ require("./config.js");
 
 // Commands
 const ai = require("./cmd/ai.js");
-const report = require("./cmd/report.js");
+const reportLenwy = require("./cmd/report_lenwy.js");
+const reportGPT = require("./cmd/report_chatgpt.js");
 const stt = require("./cmd/stt.js");
+const summaryGPT = require("./cmd/summary_chatgpt.js");
+const summaryDiktein = require("./cmd/summary_diktein.js");
 
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
@@ -55,12 +58,18 @@ client.on('message', async msg => {
   // check if the message is "ping"
   if (msg.body == '/ping') {
     msg.reply('pong');
+  } else if (msg.body.startsWith('/report ')) {
+    reportLenwy.processReport(msg);
+  } else if (msg.body.startsWith('/tni ')) {
+    summaryDiktein.processReport(msg);
   } else if (msg.body.startsWith('/lapor ')) {
-    report.processReport(msg);
+    reportGPT.processReport(msg);
   } else if (msg.body.startsWith('/ai ')) {
     ai.chatgpt(msg);
   } else if (msg.hasMedia) {
     stt.voiceToText(msg);
+  } else {
+    summaryGPT.processReport(msg);
   }
 });
 

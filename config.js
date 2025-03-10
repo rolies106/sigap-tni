@@ -21,6 +21,16 @@ global.config = {
     api: "http://api.dikte.in"
   },
 
+  openrouter: {
+    token: "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",
+    api: "https://openrouter.ai"
+  },
+
+  openai: {
+    token: "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",
+    api: "https://"
+  },
+
   // MSG (Pesan)
   msg: {
     // Proses perintah
