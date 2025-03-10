@@ -1,0 +1,52 @@
+nohup: ignoring input
+
+> sigap-tni@0.1.0 start
+> node .
+
+AUTHENTICATED
+Client is ready!
+MESSAGE RECEIVED
+chat: 628159677557@c.us
+chat
+----------------
+Processing report...
+MESSAGE RECEIVED
+chat: 628159677557@c.us
+chat
+----------------
+Processing report...
+MESSAGE RECEIVED
+ptt: 628159677557@c.us
+ptt
+----------------
+[
+  {
+    text: 'Lapor ada kebakaran di Jalan Sudirman',
+    start: 0,
+    end: 3.42,
+    speaker: null
+  }
+]
+Lapor ada kebakaran di Jalan Sudirman
+MESSAGE RECEIVED
+chat: 628159677557@c.us
+chat
+----------------
+Processing report...
+MESSAGE RECEIVED
+notification_template: 0@c.us
+notification_template
+----------------
+MESSAGE RECEIVED
+e2e_notification: 0@c.us
+e2e_notification
+----------------
+MESSAGE RECEIVED
+video: 0@c.us
+video
+----------------
+MESSAGE RECEIVED
+chat: 628159677557@c.us
+chat
+----------------
+Processing report...

@@ -26,8 +26,8 @@ async function processReport(msg) {
 
         msg.reply(data.result);
     } catch (error) {
-        if (error.status !== 200) return msg.reply(global.config.msg.error);
         console.log(`Terjadi kesalahan: ${error.message}`);
+        if (error.status !== 200) return msg.reply(global.config.msg.error);
     }
 }
 
