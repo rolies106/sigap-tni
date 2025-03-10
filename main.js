@@ -7,8 +7,9 @@ const reportGPT = require("./cmd/report_chatgpt.js");
 const stt = require("./cmd/stt.js");
 const summaryGPT = require("./cmd/summary_chatgpt.js");
 const summaryDiktein = require("./cmd/summary_diktein.js");
+const location = require("./cmd/location.js");
 
-const { Client, LocalAuth } = require('whatsapp-web.js');
+const { Client, LocalAuth, MessageTypes } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 const client = new Client({
   authStrategy: new LocalAuth(),
@@ -54,6 +55,7 @@ client.on('message', async msg => {
   console.log(msg.type);
   console.log('----------------');
 
+  console.log(msg);
 
   // check if the message is "ping"
   if (msg.body == '/ping') {
@@ -64,10 +66,10 @@ client.on('message', async msg => {
     summaryDiktein.processReport(msg);
   } else if (msg.body.startsWith('/lapor ')) {
     reportGPT.processReport(msg);
-  } else if (msg.body.startsWith('/ai ')) {
-    ai.chatgpt(msg);
   } else if (msg.hasMedia) {
     stt.voiceToText(msg);
+  } else if (msg.type == MessageTypes.LOCATION) {
+    location.processLocation(msg);
   } else {
     summaryGPT.processReport(msg);
   }

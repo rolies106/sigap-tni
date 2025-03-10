@@ -3,16 +3,12 @@ const axios = require("axios");
 
 async function processReport(msg) {
   console.log("Processing report...");
-  const input = msg.body.slice(7)
+  const input = msg.body.slice(0)
   const chatgpt = new openai({
     apiKey: global.config.openai.token,
   });
 
-  if (!input) return msg.reply(
-    `${quote(global.tools.msg.generateInstruction(["send"], ["text"]))}\n` +
-    quote(global.tools.msg.generateCommandExample('/lapor', "Cara laporan ke bot"))
-  );
-
+  if (!input || msg.body.length < 100) return msg.reply('Masukan text yang ingin anda summarize');
 
   try {
     const data = await chatgpt.chat.completions.create({

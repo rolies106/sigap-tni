@@ -3,25 +3,25 @@ async function processReport(msg) {
   console.log("Processing report...");
   const input = msg.body.slice(5)
 
-  if (!input) return msg.reply(
-    `${quote(global.tools.msg.generateInstruction(["send"], ["text"]))}\n` +
-    quote(global.tools.msg.generateCommandExample('/lapor', "Cara laporan ke bot"))
-  );
+  if (!input || msg.body.length < 300) {
+    return msg.reply("Minimal panjang laporan adalah 300 karakter");
+  } else {
+    TextSummerize(input)
+      .then(async (body) => {
+        console.log(body);
 
-  TextSummerize(input)
-    .then(async (body) => {
-      // const textInput = body[0].text
-      console.log(body);
-      // console.log(textInput);
-
-      msg.reply("Key Points:\n\n" + body.data.key_points.join("\n"));
-      msg.reply("Saran Action Plan:\n\n" + body.data.action_plan.join("\n"));
-    })
-    .catch((err) => {
-      console.error(err); // Handle the error here
-      console.log(err.response.data)
-      return msg.reply(global.config.msg.error);
-    });
+        msg.reply("Key Points:\n\n" + body.data.key_points.join("\n"));
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        msg.reply("Saran Action Plan:\n\n" + body.data.action_plan.join("\n"));
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        msg.reply("Laporan anda sudah diterima, mohon kirimkan lokasi anda untuk mengkonfirmasi laporan anda.\n\nTerimakasih");
+      })
+      .catch((err) => {
+        console.error(err); // Handle the error here
+        console.log(err.response.data)
+        return msg.reply(global.config.msg.error);
+      });
+  }
 }
 
 async function TextSummerize(longText) {

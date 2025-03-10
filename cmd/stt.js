@@ -1,6 +1,8 @@
 const axios = require("axios");
 const openai = require("openai");
 
+let textInput = '';//body[0].text
+
 async function voiceToText(msg) {
   // Here we check if the message has media
   const messageId = msg.id.id
@@ -15,7 +17,9 @@ async function voiceToText(msg) {
       if (attachmentData) {
         SpeechToTextTranscript(attachmentData.data, msg)
           .then(async (body) => {
-            const textInput = body[0].text
+            // Update header text
+            body.forEach(myFunction);
+
             console.log(body);
             console.log(textInput);
             try {
@@ -64,6 +68,10 @@ async function voiceToText(msg) {
       }
     }
   }
+}
+
+function myFunction(item) {
+  textInput += item.text + " ";
 }
 
 // This function handles the missing media in the chat by retrieving messages from the chat until the media is available
