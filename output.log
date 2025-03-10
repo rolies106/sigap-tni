@@ -50,3 +50,17 @@ chat: 628159677557@c.us
 chat
 ----------------
 Processing report...
+AUTHENTICATED
+AUTHENTICATED
+Client is ready!
+Client is ready!
+/home/ubuntu/sigap-tni/node_modules/whatsapp-web.js/src/authStrategies/LocalAuth.js:49
+                    throw new Error(e);
+                          ^
+
+Error: Error: ENOTEMPTY: directory not empty, rmdir '/home/ubuntu/sigap-tni/.wwebjs_auth/session/Default/Cache/Cache_Data'
+    at /home/ubuntu/sigap-tni/node_modules/whatsapp-web.js/src/authStrategies/LocalAuth.js:49:27
+    at async LocalAuth.logout (/home/ubuntu/sigap-tni/node_modules/whatsapp-web.js/src/authStrategies/LocalAuth.js:47:13)
+    at async /home/ubuntu/sigap-tni/node_modules/whatsapp-web.js/src/Client.js:347:17
+
+Node.js v20.18.0
