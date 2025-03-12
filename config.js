@@ -27,7 +27,7 @@ global.config = {
   },
 
   openai: {
-    token: "",
+    token: "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",
     api: "https://"
   },
 
@@ -63,5 +63,6 @@ global.config = {
 global.tools = {
   api: require('./tools/api.js'),
   general: require('./tools/general.js'),
-  msg: require('./tools/msg.js')
+  msg: require('./tools/msg.js'),
+  mongodb: require('./tools/mongodb.js')
 }

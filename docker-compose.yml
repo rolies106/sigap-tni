@@ -2,11 +2,20 @@ x-shared-variables: &shared-variables
   MODEL_VERSION: "tiny"
 
 services:
-  whisper_api:
-    build:
-      context: ./stt
-      args: *shared-variables
-    container_name: "whisper_api"
-    environment: *shared-variables
+  # whisper_api:
+  #   build:
+  #     context: ./stt
+  #     args: *shared-variables
+  #   container_name: "whisper_api"
+  #   environment: *shared-variables
+  #   ports:
+  #     - 5000:5000
+
+  mongodb:
+    container_name: mongodb
+    image: mongodb/mongodb-community-server:6.0-ubi8
+    environment:
+      - MONGODB_INITDB_ROOT_USERNAME=user
+      - MONGODB_INITDB_ROOT_PASSWORD=password
     ports:
-      - 5000:5000
+      - 27017:27017

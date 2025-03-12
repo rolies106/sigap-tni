@@ -1,5 +1,4 @@
 const openai = require("openai");
-const axios = require("axios");
 
 async function processReport(msg) {
   console.log("Processing report...");
@@ -13,7 +12,6 @@ async function processReport(msg) {
     quote(global.tools.msg.generateCommandExample('/lapor', "Cara laporan ke bot"))
   );
 
-
   try {
     const data = await chatgpt.chat.completions.create({
       messages: [
@@ -25,7 +23,9 @@ async function processReport(msg) {
               "text": `Anda adalah chatbot yang menangani laporan masyarakat, 
               anda dapat merespon dengan tindakan yang diperlukan dalam suatu kejadian, 
               asumsikan anda juga sudah terhubung ke sistem lain yang dapat menangani kejadian 
-              yang dilaporkan (seperti yang membutuhkan pemadam kebakaran, kepolisian, atau rumah sakit)`
+              yang dilaporkan (seperti yang membutuhkan pemadam kebakaran, kepolisian, atau rumah sakit),
+              tolong response dengan format raw json tanpa ada quote dengan format {"response_user": "berikan response seperti call center",
+              "tindakan": {"jenis": "","lokasi": "", "unit_ditugaskan": "", "status": ""},"tingkat_keparahan": ""} `,
             }
           ]
         },
@@ -43,9 +43,10 @@ async function processReport(msg) {
       store: true,
     });
 
-    console.log(data.choices[0]);
+    await global.tools.mongodb.insertLapor(msg, data.choices[0]);
+    const responseDecode = JSON.parse(data.choices[0].message.content);
 
-    msg.reply(data.choices[0].message.content);
+    msg.reply(responseDecode.response_user);
   } catch (error) {
     console.log(`Terjadi kesalahan: ${error.message}`);
     console.log(error);
