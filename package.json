@@ -4,22 +4,30 @@
   "description": "Sistem Informasi Getap Akurat Pintar TNI",
   "main": "main.js",
   "directories": {
-    "tools": "tools"
+    "tools": "tools",
+    "schema": "schema",
+    "seed": "seed"
   },
   "type": "commonjs",
   "author": "Rolies Deby",
   "license": "MIT",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "seed-lapor": "node -e \"require('./seed/lapor.js').generateMessages(50)\"",
+    "seed-tni": "node -e \"require('./seed/tni.js').generateMessages(50)\"",
     "start": "node ."
   },
   "dependencies": {
     "axios": "^1.7.7",
     "cheerio": "^1.0.0",
     "didyoumean": "^1.2.2",
+    "faker": "^6.6.6",
     "mongoose": "^8.12.1",
     "openai": "^4.86.2",
     "qrcode-terminal": "^0.12.0",
     "whatsapp-web.js": "^1.26.0"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^9.6.0"
   }
 }

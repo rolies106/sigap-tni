@@ -65,12 +65,12 @@ client.on('message', async msg => {
   } else if (msg.body.startsWith('/tni ')) {
     summaryDiktein.processReport(msg);
   } else if (msg.body.startsWith('/lapor ')) {
-    reportGPT.processReport(msg);
-  } else if (msg.hasMedia) {
-    stt.voiceToText(msg);
+    reportGPT.processReport(msg); // Database added
+  } else if (msg.type == MessageTypes.VOICE) {
+    stt.voiceToText(msg);  // Database added
   } else if (msg.type == MessageTypes.LOCATION) {
     location.processLocation(msg);
-  } else {
+  } else if (msg.body.startsWith('/summary ')) {
     summaryGPT.processReport(msg);
   }
 });

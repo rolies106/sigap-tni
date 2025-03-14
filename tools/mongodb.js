@@ -1,45 +1,24 @@
 const mongoose = require("mongoose");
-// const messageSchema = require('../schema/messages.js');
-// import Message from './schema/messages.js';
-
-mongoose.connect("mongodb://user:password@127.0.0.1/clarium?retryWrites=true&w=majority")
 
 const { Schema } = mongoose;
 
-const messageSchema = new Schema({
-  phoneNumber: String,
-  senderName: String,
-  cmd: String, // tni, lapor, stt, ping, location
-  contentType: String, // chat, audio, document, etc
-  rawRequest: String,
-  deviceType: String,
-  response: {
-    content: String,
-    reportType: String,
-    reportLocation: String,
-    category: String,
-    status: String,
-    severity: String,
-  },
-  keyPoints: String,
-  actionPlan: String,
-  location: {
-    long: String,
-    lat: String,
-    city: String,
-    province: String,
-  },
-  transcribe: String,
-  createdAt: { type: Date, default: Date.now },
-});
-
-const Message = mongoose.model('Message', messageSchema);
+async function connect() {
+  try {
+    mongoose.connect("mongodb://user:password@127.0.0.1/clarium?retryWrites=true&w=majority");
+    console.log("connected to db");
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 async function insertLapor(msg, response) {
-  console.log(response.message.content);
   const responseDecode = JSON.parse(response.message.content);
+  const Message = global.schema.message.messageModel();
 
   try {
+    // Connect to DB
+    await connect();
+
     const lapor = new Message({
       phoneNumber: msg.from,
       deviceType: msg.deviceType,
@@ -55,11 +34,63 @@ async function insertLapor(msg, response) {
         severity: responseDecode.tingkat_keparahan,
       }
     });
-    console.log(lapor);
-    await lapor.save();
 
-    const firstArticle = await Message.findOne({});
-    console.log(firstArticle);
+    await lapor.save();
+  } catch (error) {
+    console.error(`[${global.config.pkg.name}] Error:`, error);
+  }
+}
+
+async function insertStt(msg, textInput, response) {
+  const responseDecode = JSON.parse(response.message.content);
+  const Message = global.schema.message.messageModel();
+
+  try {
+    // Connect to DB
+    await connect();
+
+    const lapor = new Message({
+      phoneNumber: msg.from,
+      deviceType: msg.deviceType,
+      cmd: 'voice',
+      contentType: msg.type,
+      transcribe: textInput,
+      rawRequest: textInput,
+      response: {
+        content: responseDecode.response_user,
+        reportType: responseDecode.tindakan.jenis,
+        reportLocation: responseDecode.tindakan.lokasi,
+        category: responseDecode.tindakan.unit_ditugaskan,
+        status: responseDecode.tindakan.status,
+        severity: responseDecode.tingkat_keparahan,
+      }
+    });
+
+    await lapor.save();
+  } catch (error) {
+    console.error(`[${global.config.pkg.name}] Error:`, error);
+  }
+}
+
+async function insertTni(msg, response) {
+  const responseDecode = JSON.parse(response.message.content);
+  const Message = global.schema.message.messageModel();
+
+  try {
+    // Connect to DB
+    await connect();
+
+    const lapor = new Message({
+      phoneNumber: msg.from,
+      deviceType: msg.deviceType,
+      cmd: '/tni',
+      contentType: msg.type,
+      rawRequest: msg.body,
+      keyPoints: response.data.key_points.join("\n"),
+      actionPlan: response.data.action_plan.join("\n"),
+    });
+
+    await lapor.save();
   } catch (error) {
     console.error(`[${global.config.pkg.name}] Error:`, error);
   }
@@ -67,4 +98,7 @@ async function insertLapor(msg, response) {
 
 module.exports = {
   insertLapor,
+  insertStt,
+  insertTni,
+  connect,
 };

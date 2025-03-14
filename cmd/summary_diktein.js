@@ -10,6 +10,8 @@ async function processReport(msg) {
       .then(async (body) => {
         console.log(body);
 
+        await global.tools.mongodb.insertTni(msg, body);
+
         msg.reply("Key Points:\n\n" + body.data.key_points.join("\n"));
         await new Promise(resolve => setTimeout(resolve, 5000));
         msg.reply("Saran Action Plan:\n\n" + body.data.action_plan.join("\n"));

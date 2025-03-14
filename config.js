@@ -66,3 +66,11 @@ global.tools = {
   msg: require('./tools/msg.js'),
   mongodb: require('./tools/mongodb.js')
 }
+
+global.seed = {
+  lapor: require('./seed/lapor.js'),
+}
+
+global.schema = {
+  message: require('./schema/message.js'),
+}

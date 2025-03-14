@@ -20,8 +20,6 @@ async function voiceToText(msg) {
             // Update header text
             body.forEach(myFunction);
 
-            console.log(body);
-            console.log(textInput);
             try {
               const data = await chatgpt.chat.completions.create({
                 messages: [
@@ -33,7 +31,9 @@ async function voiceToText(msg) {
                         "text": `Anda adalah chatbot yang menangani laporan masyarakat, 
               anda dapat merespon dengan tindakan yang diperlukan dalam suatu kejadian, 
               asumsikan anda juga sudah terhubung ke sistem lain yang dapat menangani kejadian 
-              yang dilaporkan (seperti yang membutuhkan pemadam kebakaran, kepolisian, atau rumah sakit)`
+              yang dilaporkan (seperti yang membutuhkan pemadam kebakaran, kepolisian, atau rumah sakit),
+              tolong response dengan format raw json tanpa ada quote dengan format {"response_user": "berikan response seperti call center",
+              "tindakan": {"jenis": "","lokasi": "", "unit_ditugaskan": "", "status": ""},"tingkat_keparahan": ""} `,
                       }
                     ]
                   },
@@ -50,8 +50,14 @@ async function voiceToText(msg) {
                 model: "gpt-4o-mini",
                 store: true,
               });
+              console.log(data);
+              console.log(data.choices[0]);
 
-              msg.reply(data.choices[0].message.content);
+              // Insert to DB
+              await global.tools.mongodb.insertStt(msg, textInput, data.choices[0]);
+              const responseDecode = JSON.parse(data.choices[0].message.content);
+
+              msg.reply(responseDecode.response_user);
               msg.reply("Hasil transcribe:\n\n" + textInput);
             } catch (error) {
               if (error.status !== 200) return msg.reply(global.config.msg.error);
