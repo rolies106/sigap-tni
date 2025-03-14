@@ -10,7 +10,7 @@ async function processReport(msg) {
       .then(async (body) => {
         console.log(body);
 
-        await global.tools.mongodb.insertTni(msg, body);
+        await global.tools.mysql.insertTni(msg, body);
 
         msg.reply("Key Points:\n\n" + body.data.key_points.join("\n"));
         await new Promise(resolve => setTimeout(resolve, 5000));
@@ -20,7 +20,6 @@ async function processReport(msg) {
       })
       .catch((err) => {
         console.error(err); // Handle the error here
-        console.log(err.response.data)
         return msg.reply(global.config.msg.error);
       });
   }

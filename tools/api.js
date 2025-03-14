@@ -56,7 +56,7 @@ function createUrl(apiNameOrURL, endpoint, params = {}, apiKeyParamName) {
 
     return apiUrl.toString();
   } catch (error) {
-    console.error(`[${global.config.pkg.name}] Error:`, error);
+    console.error(`[${global.config.bot.name}] Error:`, error);
   }
 }
 

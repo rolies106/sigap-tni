@@ -9,7 +9,7 @@ async function checkAdmin(ctx, id) {
         const members = await ctx.group().members();
         return members.some((m) => (m.admin === "superadmin" || m.admin === "admin") && m.id === id);
     } catch (error) {
-        console.error(`[${global.config.pkg.name}] Error:`, error);
+        console.error(`[${global.config.bot.name}] Error:`, error);
         return false;
     }
 }
@@ -121,7 +121,7 @@ function convertMsToDuration(ms) {
 
         return durationString.trim();
     } catch (error) {
-        console.error(`[${global.config.pkg.name}] Error:`, error);
+        console.error(`[${global.config.bot.name}] Error:`, error);
         return null;
     }
 }
@@ -135,7 +135,7 @@ function formatSize(bytes) {
         const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
         return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
     } catch (error) {
-        console.error(`[${global.config.pkg.name}] Error:`, error);
+        console.error(`[${global.config.bot.name}] Error:`, error);
         return null;
     }
 }
@@ -148,7 +148,7 @@ function getRandomElement(arr) {
         const randomIndex = Math.floor(Math.random() * arr.length);
         return arr[randomIndex];
     } catch (error) {
-        console.error(`[${global.config.pkg.name}] Error:`, error);
+        console.error(`[${global.config.bot.name}] Error:`, error);
         return null;
     }
 }
@@ -190,7 +190,7 @@ function isCmd(m, ctx) {
             };
         }
     } catch (error) {
-        console.error(`[${global.config.pkg.name}] Error:`, error);
+        console.error(`[${global.config.bot.name}] Error:`, error);
         return false;
     }
 }
@@ -200,7 +200,7 @@ async function isAdmin(ctx, id) {
         const jid = id || ctx.sender.jid;
         return await checkAdmin(ctx, jid);
     } catch (error) {
-        console.error(`[${global.config.pkg.name}] Error:`, error);
+        console.error(`[${global.config.bot.name}] Error:`, error);
         return false;
     }
 }
@@ -210,7 +210,7 @@ async function isBotAdmin(ctx) {
         const id = global.config.bot.id;
         return await checkAdmin(ctx, id);
     } catch (error) {
-        console.error(`[${global.config.pkg.name}] Error:`, error);
+        console.error(`[${global.config.bot.name}] Error:`, error);
         return false;
     }
 }
@@ -222,7 +222,7 @@ function isOwner(ctx, id, selfOwner) {
             ctx._client.user.id.split(/[:@]/)[0] === jid || global.config.owner.number === jid || global.config.owner.co.includes(id) :
             global.config.owner.number === jid || global.config.owner.co.includes(id);
     } catch (error) {
-        console.error(`[${global.config.pkg.name}] Error:`, error);
+        console.error(`[${global.config.bot.name}] Error:`, error);
         return false;
     }
 }
@@ -281,7 +281,7 @@ async function translate(text, to) {
         } = await axios.get(apiUrl);
         return data.result;
     } catch (error) {
-        console.error(`[${global.config.pkg.name}] Error:`, error);
+        console.error(`[${global.config.bot.name}] Error:`, error);
         return null;
     }
 }
@@ -290,7 +290,7 @@ function ucword(str) {
     try {
         return str.toLowerCase().replace(/\b(\w)/g, (s) => s.toUpperCase());
     } catch (error) {
-        console.error(`[${global.config.pkg.name}] Error:`, error);
+        console.error(`[${global.config.bot.name}] Error:`, error);
         return null;
     }
 }

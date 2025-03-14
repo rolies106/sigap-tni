@@ -43,7 +43,7 @@ async function processReport(msg) {
       store: true,
     });
 
-    await global.tools.mongodb.insertLapor(msg, data.choices[0]);
+    await global.tools.mysql.insertLapor(msg, data.choices[0]);
     const responseDecode = JSON.parse(data.choices[0].message.content);
 
     msg.reply(responseDecode.response_user);

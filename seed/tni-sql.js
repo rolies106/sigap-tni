@@ -5,10 +5,7 @@ const { fakerID_ID } = require('@faker-js/faker');
 const faker = fakerID_ID;
 
 async function generateMessages(num) {
-  global.tools.mongodb.connect();
-
-  const msg = [];
-  const Message = global.schema.message.messageModel();
+  const pool = global.tools.mysql.connect();
 
   for (let i = 0; i < num; i++) {
     const phoneNumber = faker.phone.number();
@@ -20,20 +17,21 @@ async function generateMessages(num) {
     const keyPoints = faker.lorem.paragraphs({ min: 4, max: 6 });
     const actionPlan = faker.lorem.paragraphs({ min: 4, max: 6 });
 
-    msg.push({
+    await pool.query(`
+      INSERT INTO summary (
+        phone_number, device_type, cmd, content_type, raw_request, key_points, action_plan, status, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
       phoneNumber,
+      deviceType,
       cmd,
       contentType,
       rawRequest,
-      deviceType,
       keyPoints,
       actionPlan,
+      'new',
       createdAt
-    });
+    ]);
 
-    const lapor = new Message(msg[i]);
-
-    await lapor.save();
   }
 
   console.log('Selesai');

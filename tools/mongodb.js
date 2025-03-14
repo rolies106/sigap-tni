@@ -37,7 +37,7 @@ async function insertLapor(msg, response) {
 
     await lapor.save();
   } catch (error) {
-    console.error(`[${global.config.pkg.name}] Error:`, error);
+    console.error(`[${global.config.bot.name}] Error:`, error);
   }
 }
 
@@ -68,7 +68,7 @@ async function insertStt(msg, textInput, response) {
 
     await lapor.save();
   } catch (error) {
-    console.error(`[${global.config.pkg.name}] Error:`, error);
+    console.error(`[${global.config.bot.name}] Error:`, error);
   }
 }
 
@@ -92,7 +92,7 @@ async function insertTni(msg, response) {
 
     await lapor.save();
   } catch (error) {
-    console.error(`[${global.config.pkg.name}] Error:`, error);
+    console.error(`[${global.config.bot.name}] Error:`, error);
   }
 }
 

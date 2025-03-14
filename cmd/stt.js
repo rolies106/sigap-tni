@@ -54,14 +54,14 @@ async function voiceToText(msg) {
               console.log(data.choices[0]);
 
               // Insert to DB
-              await global.tools.mongodb.insertStt(msg, textInput, data.choices[0]);
+              await global.tools.mysql.insertStt(msg, textInput, data.choices[0]);
               const responseDecode = JSON.parse(data.choices[0].message.content);
 
               msg.reply(responseDecode.response_user);
               msg.reply("Hasil transcribe:\n\n" + textInput);
             } catch (error) {
+              console.log(`Terjadi kesalahan: ${error}`);
               if (error.status !== 200) return msg.reply(global.config.msg.error);
-              console.log(`Terjadi kesalahan: ${error.message}`);
             }
           })
           .catch((err) => {
