@@ -12,8 +12,9 @@ async function generateMessages(num) {
     const cmd = '/tni';
     const contentType = 'chat';
     const rawRequest = '/tni ' + faker.lorem.paragraphs({ min: 4, max: 6 });
-    const createdAt = faker.date.past();
+    const createdAt = faker.date.between({ from: '2025-02-01', to: '2025-02-28', format: 'YYYY-MM-DD' });
     const deviceType = faker.helpers.arrayElement(['android', 'ios']);
+    const status = faker.helpers.arrayElement(['new', 'need_confirm', 'confirmed', 'submitted']);
     const keyPoints = faker.lorem.paragraphs({ min: 4, max: 6 });
     const actionPlan = faker.lorem.paragraphs({ min: 4, max: 6 });
 
@@ -28,7 +29,7 @@ async function generateMessages(num) {
       rawRequest,
       keyPoints,
       actionPlan,
-      'new',
+      status,
       createdAt
     ]);
 

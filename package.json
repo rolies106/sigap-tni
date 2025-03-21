@@ -14,9 +14,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "seed-lapor": "node -e \"require('./seed/lapor.js').generateMessages(50)\"",
-    "seed-lapor-sql": "node -e \"require('./seed/lapor-sql.js').generateMessages(50)\"",
+    "seed-lapor-sql": "node -e \"require('./seed/lapor-sql.js').generateMessages(200000)\"",
     "seed-tni": "node -e \"require('./seed/tni.js').generateMessages(50)\"",
-    "seed-tni-sql": "node -e \"require('./seed/tni-sql.js').generateMessages(50)\"",
+    "seed-tni-sql": "node -e \"require('./seed/tni-sql.js').generateMessages(20000)\"",
     "start": "node ."
   },
   "dependencies": {

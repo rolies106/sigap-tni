@@ -11,14 +11,14 @@ services:
   #   ports:
   #     - 5000:5000
 
-  mongodb:
-    container_name: mongodb
-    image: mongodb/mongodb-community-server:6.0-ubi8
-    environment:
-      - MONGODB_INITDB_ROOT_USERNAME=user
-      - MONGODB_INITDB_ROOT_PASSWORD=password
-    ports:
-      - 27017:27017
+  # mongodb:
+  #   container_name: mongodb
+  #   image: mongodb/mongodb-community-server:6.0-ubi8
+  #   environment:
+  #     - MONGODB_INITDB_ROOT_USERNAME=user
+  #     - MONGODB_INITDB_ROOT_PASSWORD=password
+  #   ports:
+  #     - 27017:27017
   
   mysql:
     container_name: mysql
@@ -27,4 +27,16 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
     ports:
-      - 3306:3306
+      - 33061:3306
+
+  cloudflare-tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflare-tunnel
+    hostname: cloudflare-tunnel
+    restart: unless-stopped
+    network_mode: "host"
+    command: tunnel run
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - "TUNNEL_TOKEN=eyJhIjoiZWEwNTc1NjY2YzczNWZmZjBjMmE5MzczN2M0YzNmN2EiLCJ0IjoiNTZmN2QwMGMtYmYyZi00YjdiLThjODktYTg5OWYyYWM5Njg4IiwicyI6Ik5qVmpZakUyWkdZdFl6RmpaUzAwTVRZMUxXSTFObUl0TURFd1pUWXhaREJsT0RnNSJ9"
