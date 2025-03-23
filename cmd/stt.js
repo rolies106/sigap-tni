@@ -88,6 +88,7 @@ async function downloadMessageMedia(msg, maxRetries = 5) {
   while (!attachmentData && counter <= maxRetries) {
     try {
       attachmentData = await msg.downloadMedia();
+      break;
     } catch (err) {
       console.log(`Error fetching messages. Retrying in 5 seconds... (attempt ${counter}/${maxRetries})`);
       await new Promise(resolve => setTimeout(resolve, 5000));
