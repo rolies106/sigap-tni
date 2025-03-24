@@ -15,7 +15,8 @@ global.config = {
 
   stt: {
     model: "tiny",
-    api: "http://localhost:9000"
+    api: "http://localhost:9000",
+    saveFile: false,
   },
 
   diktein: {

@@ -36,8 +36,6 @@ async function processReport(msg) {
       store: true,
     });
 
-    console.log(data.choices[0]);
-
     msg.reply(data.choices[0].message.content);
   } catch (error) {
     console.log(`Terjadi kesalahan: ${error.message}`);

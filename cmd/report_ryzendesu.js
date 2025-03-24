@@ -17,9 +17,6 @@ async function processReport(msg) {
       data
     } = await axios.get(apiUrl);
 
-    console.log(apiUrl);
-    console.log(data);
-
     msg.reply(data.result);
   } catch (error) {
     console.log(`Terjadi kesalahan: ${error.message}`);

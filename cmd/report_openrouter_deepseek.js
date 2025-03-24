@@ -29,8 +29,6 @@ async function processReport(msg) {
       }
     });
 
-    console.log(apiUrl);
-    console.log(data);
 
     msg.reply(data.choices[0].text);
   } catch (error) {

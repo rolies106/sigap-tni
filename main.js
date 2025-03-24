@@ -52,7 +52,6 @@ client.on('message', async msg => {
 
   console.log('MESSAGE RECEIVED');
   console.log(msg.type + ': ' + msg.from);
-  console.log(msg.type);
   console.log('----------------');
 
   console.log(msg);

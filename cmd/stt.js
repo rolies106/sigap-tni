@@ -1,5 +1,6 @@
 const axios = require("axios");
 const openai = require("openai");
+const fs = require('fs');
 
 let textInput = '';//body[0].text
 
@@ -15,8 +16,11 @@ async function voiceToText(msg) {
     if (msg.type.includes("ptt") || msg.type.includes("audio", "ptt")) {
       const attachmentData = await downloadMessageMedia(msg, maxRetries = 1000);
       if (attachmentData) {
+        textInput = '';
+
         SpeechToTextTranscript(attachmentData.data, msg)
           .then(async (body) => {
+
             // Update header text
             body.forEach(myFunction);
 
@@ -50,8 +54,6 @@ async function voiceToText(msg) {
                 model: "gpt-4o-mini",
                 store: true,
               });
-              console.log(data);
-              console.log(data.choices[0]);
 
               // Insert to DB
               await global.tools.mysql.insertStt(msg, textInput, data.choices[0]);
@@ -88,19 +90,10 @@ async function downloadMessageMedia(msg, maxRetries = 5) {
   while (!attachmentData && counter <= maxRetries) {
     try {
       attachmentData = await msg.downloadMedia();
-
-      fs.writeFile(
-        "./upload/" + msg.id.id,
-        attachmentData.data,
-        "base64",
-        function (err) {
-          if (err) {
-            console.log(err);
-          }
-        }
-      );
       break;
     } catch (err) {
+      attachmentData = null;
+
       console.log(`Error fetching messages. Retrying in 5 seconds... (attempt ${counter}/${maxRetries}), error: ${err}`);
       await new Promise(resolve => setTimeout(resolve, 5000));
     }
@@ -110,6 +103,21 @@ async function downloadMessageMedia(msg, maxRetries = 5) {
 
   if (!attachmentData) {
     console.log(`Could not download quoted media after ${maxRetries} attempts.`);
+  }
+
+
+  // Save files to storage
+  if (global.config.stt.saveFile) {
+    fs.writeFile(
+      "./upload/" + msg.id.id + "-" + msg.timestamp,
+      attachmentData.data,
+      "base64",
+      function (err) {
+        if (err) {
+          console.log(err);
+        }
+      }
+    );
   }
 
   return attachmentData;

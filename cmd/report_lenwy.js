@@ -16,9 +16,6 @@ async function processReport(msg) {
       data
     } = await axios.get(apiUrl);
 
-    console.log(apiUrl);
-    console.log(data);
-
     msg.reply(data.data);
   } catch (error) {
     if (error.status !== 200) return msg.reply(global.config.msg.error);
