@@ -26,7 +26,13 @@ global.config = {
 
   openai: {
     token: process.env.OPENAI_TOKEN,
-    api: "https://"
+  },
+
+  department: {
+    firefighter: "62811988007",
+    admin: "628159677557",
+    hospital: "6283129274945",
+    police: "628159677557",
   },
 
   // MSG (Pesan)
@@ -64,10 +70,6 @@ global.tools = {
   msg: require('./tools/msg.js'),
   mongodb: require('./tools/mongodb.js'),
   mysql: require('./tools/mysql.js')
-}
-
-global.seed = {
-  lapor: require('./seed/lapor.js'),
 }
 
 global.schema = {
